@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   postgres:
-    image: docker.mci.dev/postgres:13.2
+    image: postgres
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRESQL_DB}
@@ -25,7 +25,7 @@ services:
       DB_USER: ${POSTGRESQL_USER}
       DB_PASSWORD: ${POSTGRESQL_PASS}
       JAVA_OPTS_APPEND: "-Dkeycloak.profile.feature.scripts=enabled -Dkeycloak.profile.feature.upload_scripts=enabled"
-    image: docker.mci.dev/jboss/keycloak:${KEYCLOAK_VERSION}
+    image: osixia/jboss/keycloak:${KEYCLOAK_VERSION}
     ports:
       - "28080:8080"
     # volumes:
@@ -33,7 +33,7 @@ services:
     restart: unless-stopped
 
   openldap:
-    image: docker.mci.dev/osixia/openldap:latest
+    image: osixia/openldap:latest
     command: --loglevel debug
     container_name: openldap
     hostname: openldap
@@ -61,7 +61,7 @@ services:
       - LDAP_READONLY_USER_PASSWORD=PASSWORD_READER
 
   phpldapadmin:
-    image: docker.mci.dev/osixia/phpldapadmin:latest
+    image: osixia/phpldapadmin:latest
     container_name: phpldapadmin
     hostname: phpldapadmin
     ports:
