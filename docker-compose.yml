@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: docker.mci.dev/postgres:13.2
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRESQL_DB}
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASS}
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+ #   networks:
+ #     - local-keycloak
+
+  keycloak:
+    depends_on:
+      - postgres
+    container_name: local_keycloak
+    environment:
+      KEYCLOAK_LOGLEVEL: DEBUG
+      DB_VENDOR: postgres
+      DB_ADDR: postgres
+      DB_DATABASE: ${POSTGRESQL_DB}
+      DB_USER: ${POSTGRESQL_USER}
+      DB_PASSWORD: ${POSTGRESQL_PASS}
+      JAVA_OPTS_APPEND: "-Dkeycloak.profile.feature.scripts=enabled -Dkeycloak.profile.feature.upload_scripts=enabled"
+    image: docker.mci.dev/jboss/keycloak:${KEYCLOAK_VERSION}
+    ports:
+      - "28080:8080"
+    # volumes:
+    #   - ./local/keycloak/:/opt/jboss/keycloak/standalone/data/
+    restart: unless-stopped
+
+  openldap:
+    image: docker.mci.dev/osixia/openldap:latest
+    command: --loglevel debug
+    container_name: openldap
+    hostname: openldap
+    ports:
+      - "389:389"
+      - "636:636"
+    volumes:
+      - ./openldap/slapd/database:/var/lib/ldap
+      - ./openldap/slapd/config:/etc/ldap/slapd.d
+      - ./openldap/slapd/schema:/root/schema
+      # - ./etc/letsencrypt:/container/service/slapd/assets/certs
+    environment:
+      - LDAP_SEED_INTERNAL_SCHEMA_PATH=/root/schema
+      - LDAP_ORGANISATION=test
+      - LDAP_DOMAIN=test.com
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=PASSWORD
+      - LDAP_CONFIG_PASSWORD=PASSWORD
+      - "LDAP_BASE_DN=dc=test,dc=com"
+      # - LDAP_TLS_CRT_FILENAME=cert.pem
+      # - LDAP_TLS_KEY_FILENAME=privkey.pem
+      # - LDAP_TLS_CA_CRT_FILENAME=fullchain.pem
+      - LDAP_READONLY_USER=true
+      - LDAP_READONLY_USER_USERNAME=reader
+      - LDAP_READONLY_USER_PASSWORD=PASSWORD_READER
+
+  phpldapadmin:
+    image: docker.mci.dev/osixia/phpldapadmin:latest
+    container_name: phpldapadmin
+    hostname: phpldapadmin
+    ports:
+      - 80:80
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=openldap
+      - PHPLDAPADMIN_HTTPS=false
+    depends_on:
+      - openldap
+
+
