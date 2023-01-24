@@ -83,7 +83,7 @@ docker-compose up -d --force-recreate
         - If need verified email automaticly:
           - Name: {Email_verified} >>> Mapper Type :{hardcoded-attribute-mapper} >>> User Model Attribute Name : {emailVerified} >>> Attribute Value : {true} 
 
-## Config Open-LDAP
+## Config Openldap
 
 
 
