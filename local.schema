@@ -1,0 +1,46 @@
+attributeType ( 1.2.840.113556.1.4.221
+    NAME 'sAMAccountName'
+    DESC 'User logon name (pre-Windows 2000)'
+    SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+    SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.146
+	NAME 'objectSid'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.40'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.662
+	NAME 'lockoutTime'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.8
+	NAME 'userAccountControl'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+
+attributetype ( 1.2.840.113556.1.4.656
+	NAME 'userPrincipalName'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )   
+
+
+objectclass ( 1.2.840.113556.1.5.9
+	NAME 'user'
+	SUP organizationalPerson
+	STRUCTURAL
+        MUST ( uid )
+	MAY ( sAMAccountName $ userPrincipalName $ userAccountControl $ lockoutTime $mail ) )
+
+attributetype ( 1.2.840.113556.1.4.750
+	NAME 'groupType'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+objectclass ( 1.2.840.113556.1.5.8
+	NAME 'group'
+	SUP top
+	STRUCTURAL 
+	MUST (cn $ groupType )
+	MAY (member $ sAMAccountName $ description $ objectSid ) )
