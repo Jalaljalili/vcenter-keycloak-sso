@@ -83,8 +83,28 @@ docker-compose up -d --force-recreate
         - If need verified email automaticly:
           - Name: {Email_verified} >>> Mapper Type :{hardcoded-attribute-mapper} >>> User Model Attribute Name : {emailVerified} >>> Attribute Value : {true} 
 
-## Config Openldap
+## Config Open-LDAP
 
+
+## Config Vcenter
+ CHANGE IDENTITY PROVIDER on Single Sing On Configuration
+  
+  * 1. Identity Provider
+        Microsoft ADFS
+  * 2. ADFS server
+        Client Identifier : {Cline Name KeyCloak}
+        Shared secret : {Credentials Secret Client from KeyCloak}
+        OpenID Address : {http://{keycloakIP}:28080/auth/realms/{Domain}/.well-known/openid-configuration}
+
+  *  3. Users and Groups
+        Base distinguished name for users: {dc=test,dc=com}
+        Base distinguished name for groups: {dc=test,dc=com}
+        Username: {cn=admin,dc=test,dc=com}
+        Password : {"Domain_Password"}
+        Primary server URL: {ldap://"Open_ldap_IP"}
+
+   After that Reboot the Vcenter in order to be applied the Configurations 
+   
 
 
 
